@@ -100,8 +100,8 @@ var photos = createArrayOfPhotos(NUMBER_OF_PHOTOS);
 
 var pictureTemplate = document.querySelector('#picture').content.querySelector('a');
 
-var renderPicture = function (photo) {
-  var pictureElement = pictureTemplate.cloneNode(true);
+var renderPicture = function (photo, template) {
+  var pictureElement = template.cloneNode(true);
 
   pictureElement.querySelector('img').src = photo.url;
   pictureElement.querySelector('.picture__likes').textContent = photo.likes;
@@ -113,7 +113,7 @@ var renderPicture = function (photo) {
 var fragment = document.createDocumentFragment();
 
 photos.forEach(function (elem) {
-  fragment.appendChild(renderPicture(elem));
+  fragment.appendChild(renderPicture(elem, pictureTemplate));
 });
 
 document.querySelector('.pictures').appendChild(fragment);
