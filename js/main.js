@@ -1,6 +1,7 @@
 'use strict';
 
 var NUMBER_OF_PHOTOS = 25;
+var PHOTO_URL_TEMPLATE = 'photos/{index}.jpg';
 var MIN_LIKES = 15;
 var MAX_LIKES = 200;
 var AVATARS = ['img/avatar-1.svg', 'img/avatar-2.svg', 'img/avatar-3.svg', 'img/avatar-4.svg', 'img/avatar-5.svg', 'img/avatar-6.svg'];
@@ -42,10 +43,8 @@ var createArrayOfUsers = function (number) {
   return arrayOfUsers;
 };
 
-var users = createArrayOfUsers(NUMBER_OF_USERS);
-
-var getRandomMessage = function () {
-  return MESSAGES[getRandomIntBetween(0, MESSAGES.length - 1)];
+var getRandomElement = function (arr) {
+  return arr[getRandomIntBetween(0, arr.length - 1)];
 };
 
 var createComment = function (user, message) {
@@ -61,15 +60,15 @@ var createComment = function (user, message) {
 var createArrayOfComments = function (number) {
   var arrayOfComments = [];
   for (var i = 0; i < number; i++) {
-    arrayOfComments.push(createComment(users[getRandomIntBetween(0, users.length - 1)], getRandomMessage()));
+    arrayOfComments.push(createComment(users[getRandomIntBetween(0, users.length - 1)], getRandomElement(MESSAGES)));
   }
 
   return arrayOfComments;
 };
 
-var createPhoto = function (i) {
+var createPhoto = function (index) {
   var photo = {
-    url: 'photos/i.jpg'.replace('i', i),
+    url: PHOTO_URL_TEMPLATE.replace('{index}', index),
     likes: getRandomIntBetween(MIN_LIKES, MAX_LIKES),
     comments: createArrayOfComments(getRandomIntBetween(0, MAX_COMMENTS))
   };
@@ -96,10 +95,6 @@ var createArrayOfPhotos = function (number) {
   return resultArray;
 };
 
-var photos = createArrayOfPhotos(NUMBER_OF_PHOTOS);
-
-var pictureTemplate = document.querySelector('#picture').content.querySelector('a');
-
 var renderPicture = function (photo, template) {
   var pictureElement = template.cloneNode(true);
 
@@ -110,10 +105,20 @@ var renderPicture = function (photo, template) {
   return pictureElement;
 };
 
-var fragment = document.createDocumentFragment();
+var createFragment = function (arr) {
+  var pictureTemplate = document.querySelector('#picture').content.querySelector('a');
 
-photos.forEach(function (elem) {
-  fragment.appendChild(renderPicture(elem, pictureTemplate));
-});
+  var fragment = document.createDocumentFragment();
 
-document.querySelector('.pictures').appendChild(fragment);
+  arr.forEach(function (elem) {
+    fragment.appendChild(renderPicture(elem, pictureTemplate));
+  });
+
+  return fragment;
+};
+
+var users = createArrayOfUsers(NUMBER_OF_USERS);
+
+var photos = createArrayOfPhotos(NUMBER_OF_PHOTOS);
+
+document.querySelector('.pictures').appendChild(createFragment(photos));
