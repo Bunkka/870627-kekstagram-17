@@ -16,6 +16,10 @@ var MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 var MAX_COMMENTS = 2;
+var ESC_KEY_CODE = 27;
+var SCALE_STEP = 25;
+var MIN_SCALE_VALUE = 25;
+var MAX_SCALE_VALUE = 100;
 
 var getRandomIntBetween = function (min, max) {
   return Math.floor(min + (max - min + 1) * Math.random());
@@ -117,8 +121,73 @@ var createFragment = function (arr) {
   return fragment;
 };
 
-var users = createArrayOfUsers(NUMBER_OF_USERS);
+var openEditingForm = function () {
+  imageEditingForm.classList.remove('hidden');
+  scaleControlValue.value = '100%';
+  imagePreview.style = '';
 
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEY_CODE) {
+      closeEditingForm();
+    }
+  });
+};
+
+var closeEditingForm = function () {
+  imageEditingForm.classList.add('hidden');
+  uploadFileInput.value = '';
+};
+
+var reduceImageScale = function () {
+  var scaleControlValueInt = parseInt(scaleControlValue.value, 10);
+  scaleControlValueInt -= SCALE_STEP;
+  if (scaleControlValueInt < MIN_SCALE_VALUE) {
+    scaleControlValueInt = MIN_SCALE_VALUE;
+  }
+  scaleControlValue.value = scaleControlValueInt + '%';
+  scaleImage(scaleControlValueInt);
+};
+
+var increaseImageScale = function () {
+  var scaleControlValueInt = parseInt(scaleControlValue.value, 10);
+  scaleControlValueInt += SCALE_STEP;
+  if (scaleControlValueInt > MAX_SCALE_VALUE) {
+    scaleControlValueInt = MAX_SCALE_VALUE;
+  }
+  scaleControlValue.value = scaleControlValueInt + '%';
+  scaleImage(scaleControlValueInt);
+};
+
+var scaleImage = function (percents) {
+  var scaleValue = percents / 100;
+  imagePreview.style = 'transform: scale(' + scaleValue + ')';
+};
+
+var users = createArrayOfUsers(NUMBER_OF_USERS);
 var photos = createArrayOfPhotos(NUMBER_OF_PHOTOS);
 
 document.querySelector('.pictures').appendChild(createFragment(photos));
+
+var imageEditingForm = document.querySelector('.img-upload__overlay');
+var uploadFileInput = document.querySelector('#upload-file');
+var closeButton = document.querySelector('#upload-cancel');
+var scaleControlSmaller = document.querySelector('.scale__control--smaller');
+var scaleControlBigger = document.querySelector('.scale__control--bigger');
+var scaleControlValue = document.querySelector('.scale__control--value');
+var imagePreview = document.querySelector('.img-upload__preview');
+
+uploadFileInput.addEventListener('change', function () {
+  openEditingForm();
+});
+
+closeButton.addEventListener('click', function () {
+  closeEditingForm();
+});
+
+scaleControlSmaller.addEventListener('click', function () {
+  reduceImageScale();
+});
+
+scaleControlBigger.addEventListener('click', function () {
+  increaseImageScale();
+});
