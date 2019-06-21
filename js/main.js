@@ -236,6 +236,7 @@ var scaleControlSmaller = imageEditingForm.querySelector('.scale__control--small
 var scaleControlBigger = imageEditingForm.querySelector('.scale__control--bigger');
 var scaleControlValue = imageEditingForm.querySelector('.scale__control--value');
 var imagePreview = imageEditingForm.querySelector('.img-upload__preview');
+var commentField = document.querySelector('.text__description');
 
 var effectLevelField = document.querySelector('.img-upload__effect-level');
 var effectLevelPin = effectLevelField.querySelector('.effect-level__pin');
@@ -291,4 +292,18 @@ effectPhobosRadio.addEventListener('change', function () {
 
 effectHeatRadio.addEventListener('change', function () {
   setFilterHeat(MAX_PERCENT_INSTENSITY);
+});
+
+commentField.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onEditingFormEscPress);
+});
+
+commentField.addEventListener('blur', function () {
+  document.addEventListener('keydown', onEditingFormEscPress);
+});
+
+commentField.addEventListener('invalid', function () {
+  if (commentField.validity.tooLong) {
+    commentField.setCustomValidity('Имя не должно превышать 140 символов');
+  }
 });
