@@ -20,7 +20,6 @@ var ESC_KEY_CODE = 27;
 var SCALE_STEP = 25;
 var MIN_SCALE_VALUE = 25;
 var MAX_SCALE_VALUE = 100;
-var MAX_PERCENT_INSTENSITY = 100;
 
 var getRandomIntBetween = function (min, max) {
   return Math.floor(min + (max - min + 1) * Math.random());
@@ -241,6 +240,8 @@ var commentField = document.querySelector('.text__description');
 var effectLevelField = document.querySelector('.img-upload__effect-level');
 var effectLevelPin = effectLevelField.querySelector('.effect-level__pin');
 var effectLevelValue = effectLevelField.querySelector('.effect-level__value');
+var effectLevelLine = effectLevelField.querySelector('.effect-level__line');
+var effectLevelDepth = effectLevelField.querySelector('.effect-level__depth');
 
 var effectsField = document.querySelector('.img-upload__effects');
 var effectNoneRadio = effectsField.querySelector('#effect-none');
@@ -266,8 +267,40 @@ scaleControlBigger.addEventListener('click', function () {
   increaseImageScale();
 });
 
-effectLevelPin.addEventListener('mouseup', function () {
-  setEffectLevel();
+effectLevelPin.addEventListener('mousedown', function (downEvt) {
+  downEvt.preventDefault();
+
+  var startCoordX = downEvt.clientX;
+  var offsetLeft = effectLevelPin.offsetLeft;
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shiftX = startCoordX - moveEvt.clientX;
+    offsetLeft = offsetLeft - shiftX;
+    startCoordX = moveEvt.clientX;
+
+    if (offsetLeft < 0) {
+      effectLevelPin.style.left = 0;
+    } else if (offsetLeft > effectLevelLine.clientWidth) {
+      effectLevelPin.style.left = effectLevelLine.clientWidth + 'px';
+    } else {
+      effectLevelPin.style.left = offsetLeft + 'px';
+    }
+
+    effectLevelDepth.style.width = parseInt(effectLevelPin.style.left, 10) / effectLevelLine.clientWidth * 100 + '%';
+    effectLevelValue.value = parseInt(effectLevelPin.style.left, 10) / effectLevelLine.clientWidth * 100 + '';
+
+    setEffectLevel();
+  };
+
+  var onMouseUp = function () {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
 
 effectNoneRadio.addEventListener('change', function () {
@@ -275,23 +308,23 @@ effectNoneRadio.addEventListener('change', function () {
 });
 
 effectChromeRadio.addEventListener('change', function () {
-  setFilterChrome(MAX_PERCENT_INSTENSITY);
+  setEffectLevel();
 });
 
 effectSepiaRadio.addEventListener('change', function () {
-  setFilterSepia(MAX_PERCENT_INSTENSITY);
+  setEffectLevel();
 });
 
 effectMarvinRadio.addEventListener('change', function () {
-  setFilterMarvin(MAX_PERCENT_INSTENSITY);
+  setEffectLevel();
 });
 
 effectPhobosRadio.addEventListener('change', function () {
-  setFilterPhobos(MAX_PERCENT_INSTENSITY);
+  setEffectLevel();
 });
 
 effectHeatRadio.addEventListener('change', function () {
-  setFilterHeat(MAX_PERCENT_INSTENSITY);
+  setEffectLevel();
 });
 
 commentField.addEventListener('focus', function () {
