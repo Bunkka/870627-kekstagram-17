@@ -11,7 +11,7 @@
     return pictureElement;
   };
 
-  var createFragment = function (arr) {
+  var createFragmentOfPictures = function (arr) {
     var pictureTemplate = document.querySelector('#picture').content.querySelector('a');
     var fragment = document.createDocumentFragment();
 
@@ -22,5 +22,5 @@
     return fragment;
   };
 
-  document.querySelector('.pictures').appendChild(createFragment(window.data.photos));
+  document.querySelector('.pictures').appendChild(createFragmentOfPictures(window.data.photos));
 })();
