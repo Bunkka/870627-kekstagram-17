@@ -74,7 +74,7 @@
 
   var scaleImage = function (percents) {
     var scaleValue = percents / 100;
-    imagePreview.style.transform = 'scale(' + scaleValue + ')';
+    imagePreview.querySelector('img').style.transform = 'scale(' + scaleValue + ')';
   };
 
   var reduceImageScale = function () {
@@ -95,6 +95,14 @@
     }
     scaleControlValue.value = scaleControlValueInt + '%';
     scaleImage(scaleControlValueInt);
+  };
+
+  var removeEffectsClasses = function (elem) {
+    elem.classList.remove('effects__preview--chrome');
+    elem.classList.remove('effects__preview--sepia');
+    elem.classList.remove('effects__preview--marvin');
+    elem.classList.remove('effects__preview--phobos');
+    elem.classList.remove('effects__preview--heat');
   };
 
   var setFilterNone = function () {
@@ -177,30 +185,41 @@
   };
 
   var onEffectNoneRadioChange = function () {
+    removeEffectsClasses(imagePreview);
     setFilterNone();
   };
 
   var onEffectChromeRadioChange = function () {
+    removeEffectsClasses(imagePreview);
+    imagePreview.classList.add('effects__preview--chrome');
     setPinToDefault();
     setEffectLevel();
   };
 
   var onEffectSepiaRadioChange = function () {
+    removeEffectsClasses(imagePreview);
+    imagePreview.classList.add('effects__preview--sepia');
     setPinToDefault();
     setEffectLevel();
   };
 
   var onEffectMarvinRadioChange = function () {
+    removeEffectsClasses(imagePreview);
+    imagePreview.classList.add('effects__preview--marvin');
     setPinToDefault();
     setEffectLevel();
   };
 
   var onEffectPhobosRadioChange = function () {
+    removeEffectsClasses(imagePreview);
+    imagePreview.classList.add('effects__preview--phobos');
     setPinToDefault();
     setEffectLevel();
   };
 
   var onEffectHeatRadioChange = function () {
+    removeEffectsClasses(imagePreview);
+    imagePreview.classList.add('effects__preview--heat');
     setPinToDefault();
     setEffectLevel();
   };
