@@ -26,8 +26,8 @@
     document.querySelector('.pictures').appendChild(createFragmentOfPictures(photos));
   };
 
-  var onLoadPhotosError = function (message) {
-    alert(message);
+  var onLoadPhotosError = function () {
+    onLoadPhotosSuccess(window.data.photos);
   };
 
   window.backend.load(onLoadPhotosSuccess, onLoadPhotosError);
