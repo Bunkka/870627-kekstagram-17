@@ -39,40 +39,18 @@
     imagePreview.style = '';
     effectNoneRadio.checked = true;
     effectLevelField.classList.add('hidden');
-    document.addEventListener('keydown', onEditingFormEscPress);
-    closeButton.addEventListener('click', onCloseButtonClick);
-    scaleControlSmaller.addEventListener('click', onScaleControlSmallerClick);
-    scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
-    effectNoneRadio.addEventListener('change', onEffectNoneRadioChange);
-    effectChromeRadio.addEventListener('change', onEffectChromeRadioChange);
-    effectSepiaRadio.addEventListener('change', onEffectSepiaRadioChange);
-    effectMarvinRadio.addEventListener('change', onEffectMarvinRadioChange);
-    effectPhobosRadio.addEventListener('change', onEffectPhobosRadioChange);
-    effectHeatRadio.addEventListener('change', onEffectHeatRadioChange);
-    effectLevelPin.addEventListener('mousedown', onEffectLevelPinMousedown);
-    commentField.addEventListener('focus', onCommentFieldFocus);
-    commentField.addEventListener('blur', onCommentFieldBlur);
-    commentField.addEventListener('invalid', onCommentFieldInvalid);
+    listenersMapings.forEach(function (elem) {
+      elem.element.addEventListener(elem.event, elem.listener);
+    });
   };
 
   var closeEditingForm = function () {
     imageEditingForm.classList.add('hidden');
     uploadFileInput.value = '';
     removeEffectsClasses(imagePreviewContainer);
-    document.removeEventListener('keydown', onEditingFormEscPress);
-    closeButton.removeEventListener('click', onCloseButtonClick);
-    scaleControlSmaller.removeEventListener('click', onScaleControlSmallerClick);
-    scaleControlBigger.removeEventListener('click', onScaleControlBiggerClick);
-    effectNoneRadio.removeEventListener('change', onEffectNoneRadioChange);
-    effectChromeRadio.removeEventListener('change', onEffectChromeRadioChange);
-    effectSepiaRadio.removeEventListener('change', onEffectSepiaRadioChange);
-    effectMarvinRadio.removeEventListener('change', onEffectMarvinRadioChange);
-    effectPhobosRadio.removeEventListener('change', onEffectPhobosRadioChange);
-    effectHeatRadio.removeEventListener('change', onEffectHeatRadioChange);
-    effectLevelPin.removeEventListener('mousedown', onEffectLevelPinMousedown);
-    commentField.removeEventListener('focus', onCommentFieldFocus);
-    commentField.removeEventListener('blur', onCommentFieldBlur);
-    commentField.removeEventListener('invalid', onCommentFieldInvalid);
+    listenersMapings.forEach(function (elem) {
+      elem.element.removeEventListener(elem.event, elem.listener);
+    });
   };
 
   var scaleImage = function (percents) {
@@ -138,24 +116,17 @@
     imagePreviewContainer.style.filter = 'brightness(' + intensity + ')';
   };
 
+  var invokeEffects = {
+    chrome: setFilterChrome,
+    sepia: setFilterSepia,
+    marvin: setFilterMarvin,
+    phobos: setFilterPhobos,
+    heat: setFilterHeat
+  };
+
   var setEffectLevel = function () {
-    switch (effectsField.querySelector('input:checked').value) {
-      case 'chrome':
-        setFilterChrome(effectLevelValue.value);
-        break;
-      case 'sepia':
-        setFilterSepia(effectLevelValue.value);
-        break;
-      case 'marvin':
-        setFilterMarvin(effectLevelValue.value);
-        break;
-      case 'phobos':
-        setFilterPhobos(effectLevelValue.value);
-        break;
-      case 'heat':
-        setFilterHeat(effectLevelValue.value);
-        break;
-    }
+    var setEffect = invokeEffects[effectsField.querySelector('input:checked').value];
+    setEffect(effectLevelValue.value);
   };
 
   var setPinToDefault = function () {
@@ -276,6 +247,23 @@
       commentField.setCustomValidity('Имя не должно превышать 140 символов');
     }
   };
+
+  var listenersMapings = [
+    {element: document, event: 'keydown', listener: onEditingFormEscPress},
+    {element: closeButton, event: 'click', listener: onCloseButtonClick},
+    {element: scaleControlSmaller, event: 'click', listener: onScaleControlSmallerClick},
+    {element: scaleControlBigger, event: 'click', listener: onScaleControlBiggerClick},
+    {element: effectNoneRadio, event: 'change', listener: onEffectNoneRadioChange},
+    {element: effectChromeRadio, event: 'change', listener: onEffectChromeRadioChange},
+    {element: effectSepiaRadio, event: 'change', listener: onEffectSepiaRadioChange},
+    {element: effectMarvinRadio, event: 'change', listener: onEffectMarvinRadioChange},
+    {element: effectPhobosRadio, event: 'change', listener: onEffectPhobosRadioChange},
+    {element: effectHeatRadio, event: 'change', listener: onEffectHeatRadioChange},
+    {element: effectLevelPin, event: 'mousedown', listener: onEffectLevelPinMousedown},
+    {element: commentField, event: 'focus', listener: onCommentFieldFocus},
+    {element: commentField, event: 'blur', listener: onCommentFieldBlur},
+    {element: commentField, event: 'invalid', listener: onCommentFieldInvalid}
+  ];
 
   uploadFileInput.addEventListener('change', onUploadFileInputChange);
 })();

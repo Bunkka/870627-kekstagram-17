@@ -22,5 +22,13 @@
     return fragment;
   };
 
-  document.querySelector('.pictures').appendChild(createFragmentOfPictures(window.data.photos));
+  var onLoadPhotosSuccess = function (photos) {
+    document.querySelector('.pictures').appendChild(createFragmentOfPictures(photos));
+  };
+
+  var onLoadPhotosError = function () {
+    onLoadPhotosSuccess(window.data.photos);
+  };
+
+  window.backend.load(onLoadPhotosSuccess, onLoadPhotosError);
 })();
