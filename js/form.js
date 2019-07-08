@@ -6,9 +6,11 @@
   var MIN_SCALE_VALUE = 25;
   var MAX_SCALE_VALUE = 100;
 
-  var uploadFileInput = document.querySelector('#upload-file');
+  var uploadForm = document.querySelector('.img-upload__form');
 
-  var imageEditingForm = document.querySelector('.img-upload__overlay');
+  var uploadFileInput = uploadForm.querySelector('#upload-file');
+
+  var imageEditingForm = uploadForm.querySelector('.img-upload__overlay');
   var closeButton = imageEditingForm.querySelector('#upload-cancel');
   var scaleControlSmaller = imageEditingForm.querySelector('.scale__control--smaller');
   var scaleControlBigger = imageEditingForm.querySelector('.scale__control--bigger');
@@ -16,13 +18,13 @@
   var imagePreviewContainer = imageEditingForm.querySelector('.img-upload__preview');
   var imagePreview = imagePreviewContainer.querySelector('img');
 
-  var effectLevelField = document.querySelector('.img-upload__effect-level');
+  var effectLevelField = imageEditingForm.querySelector('.img-upload__effect-level');
   var effectLevelPin = effectLevelField.querySelector('.effect-level__pin');
   var effectLevelValue = effectLevelField.querySelector('.effect-level__value');
   var effectLevelLine = effectLevelField.querySelector('.effect-level__line');
   var effectLevelDepth = effectLevelField.querySelector('.effect-level__depth');
 
-  var effectsField = document.querySelector('.img-upload__effects');
+  var effectsField = imageEditingForm.querySelector('.img-upload__effects');
   var effectNoneRadio = effectsField.querySelector('#effect-none');
   var effectChromeRadio = effectsField.querySelector('#effect-chrome');
   var effectSepiaRadio = effectsField.querySelector('#effect-sepia');
@@ -30,7 +32,7 @@
   var effectPhobosRadio = effectsField.querySelector('#effect-phobos');
   var effectHeatRadio = effectsField.querySelector('#effect-heat');
 
-  var commentField = document.querySelector('.text__description');
+  var commentField = imageEditingForm.querySelector('.text__description');
 
   var openEditingForm = function () {
     imageEditingForm.classList.remove('hidden');
@@ -244,7 +246,9 @@
 
   var onCommentFieldInvalid = function () {
     if (commentField.validity.tooLong) {
-      commentField.setCustomValidity('Имя не должно превышать 140 символов');
+      commentField.setCustomValidity('Текст не должен превышать 140 символов');
+    } else {
+      commentField.setCustomValidity('');
     }
   };
 
