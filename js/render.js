@@ -9,6 +9,16 @@
   var filterNew = filtersContainer.querySelector('#filter-new');
   var filterDiscussed = filtersContainer.querySelector('#filter-discussed');
 
+  var bigPicture = document.querySelector('.big-picture');
+  var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
+  var bigPictureLikesCount = bigPicture.querySelector('.likes-count');
+  var socialCommentCount = bigPicture.querySelector('.social__comment-count');
+  var commentsCount = socialCommentCount.querySelector('.comments-count');
+  var bigPictureDescription = bigPicture.querySelector('.social__caption');
+  var socialComments = bigPicture.querySelector('.social__comments');
+  var commentsLoader = bigPicture.querySelector('.comments-loader');
+  var commentTemplate = socialComments.querySelector('.social__comment');
+
   var downloadedPhotos = [];
 
   var renderPicture = function (photo, template) {
@@ -17,6 +27,32 @@
     pictureElement.querySelector('img').src = photo.url;
     pictureElement.querySelector('.picture__likes').textContent = photo.likes;
     pictureElement.querySelector('.picture__comments').textContent = photo.comments.length;
+
+    var onPictureElementClick = function () {
+      bigPicture.classList.remove('hidden');
+
+      bigPictureImg.src = photo.url;
+      bigPictureLikesCount.textContent = photo.likes;
+      commentsCount.textContent = photo.comments.length;
+      bigPictureDescription.textContent = photo.description;
+
+      socialComments.querySelectorAll('li').forEach(function (elem) {
+        elem.remove();
+      });
+
+      photo.comments.forEach(function (elem) {
+        var newComment = commentTemplate.cloneNode(true);
+        newComment.querySelector('.social__picture').src = elem.avatar;
+        newComment.querySelector('.social__text').textContent = elem.message;
+
+        socialComments.appendChild(newComment);
+      });
+
+      commentsLoader.classList.add('visually-hidden');
+      socialCommentCount.classList.add('visually-hidden');
+    };
+
+    pictureElement.addEventListener('click', onPictureElementClick);
 
     return pictureElement;
   };
