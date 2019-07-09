@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var ESC_KEY_CODE = 27;
   var SCALE_STEP = 25;
   var MIN_SCALE_VALUE = 25;
   var MAX_SCALE_VALUE = 100;
@@ -143,7 +142,7 @@
   };
 
   var onEditingFormEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEY_CODE) {
+    if (evt.keyCode === window.util.ESC_KEY_CODE) {
       closeEditingForm();
     }
   };

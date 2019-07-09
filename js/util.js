@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var ESC_KEY_CODE = 27;
+
   var getRandomIntBetween = function (min, max) {
     return Math.floor(min + (max - min + 1) * Math.random());
   };
@@ -14,6 +16,7 @@
   };
 
   window.util = {
+    ESC_KEY_CODE: ESC_KEY_CODE,
     getRandomIntBetween: getRandomIntBetween,
     withdrawRandomArrayItem: withdrawRandomArrayItem,
     getRandomArrayItem: getRandomArrayItem

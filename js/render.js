@@ -10,6 +10,7 @@
   var filterDiscussed = filtersContainer.querySelector('#filter-discussed');
 
   var bigPicture = document.querySelector('.big-picture');
+  var bigPictureCloseButton = bigPicture.querySelector('#picture-cancel');
   var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
   var bigPictureLikesCount = bigPicture.querySelector('.likes-count');
   var socialCommentCount = bigPicture.querySelector('.social__comment-count');
@@ -28,8 +29,27 @@
     pictureElement.querySelector('.picture__likes').textContent = photo.likes;
     pictureElement.querySelector('.picture__comments').textContent = photo.comments.length;
 
+    var closeBigPicture = function () {
+      bigPicture.classList.add('hidden');
+      bigPictureCloseButton.removeEventListener('click', onBigPictureCloseButtonClick);
+      document.removeEventListener('keydown', onBigPictureEscPress);
+    };
+
+    var onBigPictureCloseButtonClick = function () {
+      closeBigPicture();
+    };
+
+    var onBigPictureEscPress = function (evt) {
+      if (evt.keyCode === window.util.ESC_KEY_CODE) {
+        closeBigPicture();
+      }
+    };
+
     var onPictureElementClick = function () {
       bigPicture.classList.remove('hidden');
+
+      bigPictureCloseButton.addEventListener('click', onBigPictureCloseButtonClick);
+      document.addEventListener('keydown', onBigPictureEscPress);
 
       bigPictureImg.src = photo.url;
       bigPictureLikesCount.textContent = photo.likes;
