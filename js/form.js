@@ -32,6 +32,7 @@
   var effectHeatRadio = effectsField.querySelector('#effect-heat');
 
   var commentField = imageEditingForm.querySelector('.text__description');
+  var hashtagsField = imageEditingForm.querySelector('.text__hashtags');
 
   var openEditingForm = function () {
     imageEditingForm.classList.remove('hidden');
@@ -135,6 +136,39 @@
     effectLevelPin.style.left = effectLevelLine.clientWidth + 'px';
     effectLevelDepth.style.width = '100%';
     effectLevelValue.value = 100;
+  };
+
+  var hashtagsValidation = function (text) {
+    var textAsArray = text.split(' ');
+    var arrayOfHashtags = [];
+
+    textAsArray.forEach(function (elem) {
+      if (elem) {
+        arrayOfHashtags.push(elem);
+      }
+    });
+
+    if (arrayOfHashtags.length > 5) {
+      return 'Нельзя указывать больше пяти хэш-тегов';
+    }
+
+    for (var i = 0; i < arrayOfHashtags.length; i++) {
+      if (arrayOfHashtags[i][0] !== '#') {
+        return 'Хэш-тег должен начинаться с символа #';
+      } else if (arrayOfHashtags[i] === '#') {
+        return 'Хэш-тег не может состоять только из одной решетки';
+      } else if (arrayOfHashtags[i].length > 20) {
+        return 'Хэш-теги должны быть короче 20-ти символов';
+      } else {
+        for (var j = i + 1; j < arrayOfHashtags.length; j++) {
+          if (arrayOfHashtags[i].toLowerCase() === arrayOfHashtags[j].toLowerCase()) {
+            return 'Хэш-теги не могут повторяться';
+          }
+        }
+      }
+    }
+
+    return '';
   };
 
   var onUploadFileInputChange = function () {
@@ -243,11 +277,34 @@
     document.addEventListener('keydown', onEditingFormEscPress);
   };
 
+  var onHashtagsFieldFocus = function () {
+    document.removeEventListener('keydown', onEditingFormEscPress);
+  };
+
+  var onHashtagsFieldBlur = function () {
+    document.addEventListener('keydown', onEditingFormEscPress);
+  };
+
   var onCommentFieldInvalid = function () {
     if (commentField.validity.tooLong) {
       commentField.setCustomValidity('Текст не должен превышать 140 символов');
     } else {
       commentField.setCustomValidity('');
+    }
+  };
+
+  var onHashtagsFieldInput = function () {
+    hashtagsField.setCustomValidity('');
+  };
+
+  var onUploadFormSubmit = function (evt) {
+    evt.preventDefault();
+    var validityMessage = hashtagsValidation(hashtagsField.value);
+
+    hashtagsField.setCustomValidity(validityMessage);
+
+    if (validityMessage === '') {
+      window.backend.save();
     }
   };
 
@@ -265,7 +322,11 @@
     {element: effectLevelPin, event: 'mousedown', listener: onEffectLevelPinMousedown},
     {element: commentField, event: 'focus', listener: onCommentFieldFocus},
     {element: commentField, event: 'blur', listener: onCommentFieldBlur},
-    {element: commentField, event: 'invalid', listener: onCommentFieldInvalid}
+    {element: commentField, event: 'invalid', listener: onCommentFieldInvalid},
+    {element: hashtagsField, event: 'focus', listener: onHashtagsFieldFocus},
+    {element: hashtagsField, event: 'blur', listener: onHashtagsFieldBlur},
+    {element: hashtagsField, event: 'input', listener: onHashtagsFieldInput},
+    {element: uploadForm, event: 'submit', listener: onUploadFormSubmit}
   ];
 
   uploadFileInput.addEventListener('change', onUploadFileInputChange);

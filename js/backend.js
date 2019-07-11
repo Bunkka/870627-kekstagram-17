@@ -56,7 +56,12 @@
     xhr.send();
   };
 
+  var save = function () {
+
+  };
+
   window.backend = {
-    load: load
+    load: load,
+    save: save
   };
 })();
