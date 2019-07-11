@@ -50,6 +50,8 @@
     imageEditingForm.classList.add('hidden');
     uploadFileInput.value = '';
     removeEffectsClasses(imagePreviewContainer);
+    commentField.value = '';
+    hashtagsField.value = '';
     listenersMapings.forEach(function (elem) {
       elem.element.removeEventListener(elem.event, elem.listener);
     });
@@ -255,7 +257,7 @@
       }
 
       effectLevelDepth.style.width = parseInt(effectLevelPin.style.left, 10) / effectLevelLine.clientWidth * 100 + '%';
-      effectLevelValue.value = parseInt(effectLevelPin.style.left, 10) / effectLevelLine.clientWidth * 100 + '';
+      effectLevelValue.value = Math.round(parseInt(effectLevelPin.style.left, 10) / effectLevelLine.clientWidth * 100 + '');
 
       setEffectLevel();
     };
@@ -304,8 +306,21 @@
     hashtagsField.setCustomValidity(validityMessage);
 
     if (validityMessage === '') {
-      window.backend.save();
+      window.messages.showLoading();
+      window.backend.save(new FormData(uploadForm), onSendFormSuccess, onSendFormError);
     }
+  };
+
+  var onSendFormSuccess = function () {
+    closeEditingForm();
+    window.messages.hideLoading();
+    window.messages.showSuccess();
+  };
+
+  var onSendFormError = function (errorText) {
+    closeEditingForm();
+    window.messages.hideLoading();
+    window.messages.showError(errorText);
   };
 
   var listenersMapings = [

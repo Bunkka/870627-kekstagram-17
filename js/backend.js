@@ -2,6 +2,7 @@
 
 (function () {
   var LOAD_URL = 'https://js.dump.academy/kekstagram/data';
+  var SAVE_URL = 'https://js.dump.academy/kekstagram';
   var Code = {
     SUCCESS: 200,
     BAD_REQUEST: 400,
@@ -32,7 +33,7 @@
           errorMessage = 'ОШИБКА! Файл не найден! (404)';
           break;
         case Code.SERVER_ERROR:
-          errorMessage = 'ОШИБКА! На сервере произошла ошибка! (500)';
+          errorMessage = 'На сервере произошла ошибка! (500)';
           break;
         default:
           errorMessage = 'ОШИБКА! Статус ошибки: ' + xhr.status;
@@ -56,8 +57,37 @@
     xhr.send();
   };
 
-  var save = function () {
+  var save = function (data, onLoad, onError) {
+    var xhr = new XMLHttpRequest();
+    xhr.timeout = DEFAULT_TIMEOUT;
 
+    xhr.addEventListener('load', function () {
+      var errorMessage = '';
+      switch (xhr.status) {
+        case Code.SUCCESS:
+          onLoad();
+          break;
+        case Code.SERVER_ERROR:
+          errorMessage = 'На сервере произошла ошибка! (500)';
+          break;
+        default:
+          errorMessage = 'ОШИБКА! Статус ошибки: ' + xhr.status;
+      }
+      if (errorMessage) {
+        onError(errorMessage);
+      }
+    });
+
+    xhr.addEventListener('error', function () {
+      onError('Произошла ошибка соединения');
+    });
+
+    xhr.addEventListener('timeout', function () {
+      onError('Запрос не успел выполниться за ' + xhr.timeout + ' секунд!');
+    });
+
+    xhr.open('POST', SAVE_URL);
+    xhr.send(data);
   };
 
   window.backend = {
