@@ -83,7 +83,7 @@
     });
 
     xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + ' секунд!');
+      onError('Запрос не успел выполниться за ' + xhr.timeout + ' миллисекунд!');
     });
 
     xhr.open('POST', SAVE_URL);

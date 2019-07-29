@@ -142,28 +142,30 @@
 
   var hashtagsValidation = function (text) {
     var textAsArray = text.split(' ');
-    var arrayOfHashtags = [];
+    var hashtags = [];
 
     textAsArray.forEach(function (elem) {
       if (elem) {
-        arrayOfHashtags.push(elem);
+        hashtags.push(elem);
       }
     });
 
-    if (arrayOfHashtags.length > 5) {
+    if (hashtags.length > 5) {
       return 'Нельзя указывать больше пяти хэш-тегов';
     }
 
-    for (var i = 0; i < arrayOfHashtags.length; i++) {
-      if (arrayOfHashtags[i][0] !== '#') {
+    for (var i = 0; i < hashtags.length; i++) {
+      if (hashtags[i][0] !== '#') {
         return 'Хэш-тег должен начинаться с символа #';
-      } else if (arrayOfHashtags[i] === '#') {
+      } else if (hashtags[i].slice(1).includes('#')) {
+        return 'Хештеги должны быть разделены пробелами';
+      } else if (hashtags[i] === '#') {
         return 'Хэш-тег не может состоять только из одной решетки';
-      } else if (arrayOfHashtags[i].length > 20) {
+      } else if (hashtags[i].length > 20) {
         return 'Хэш-теги должны быть короче 20-ти символов';
       } else {
-        for (var j = i + 1; j < arrayOfHashtags.length; j++) {
-          if (arrayOfHashtags[i].toLowerCase() === arrayOfHashtags[j].toLowerCase()) {
+        for (var j = i + 1; j < hashtags.length; j++) {
+          if (hashtags[i].toLowerCase() === hashtags[j].toLowerCase()) {
             return 'Хэш-теги не могут повторяться';
           }
         }
@@ -287,28 +289,42 @@
     document.addEventListener('keydown', onEditingFormEscPress);
   };
 
+  var setRedBorder = function (elem) {
+    elem.style.border = '2px solid red';
+  };
+
+  var removeStyle = function (elem) {
+    elem.removeAttribute('style');
+  };
+
   var onCommentFieldInvalid = function () {
     if (commentField.validity.tooLong) {
       commentField.setCustomValidity('Текст не должен превышать 140 символов');
     } else {
       commentField.setCustomValidity('');
     }
+    setRedBorder(commentField);
+  };
+
+  var onHashtagsFieldInvalid = function () {
+    setRedBorder(hashtagsField);
   };
 
   var onHashtagsFieldInput = function () {
-    hashtagsField.setCustomValidity('');
+    var validityMessage = hashtagsValidation(hashtagsField.value);
+
+    removeStyle(hashtagsField);
+    hashtagsField.setCustomValidity(validityMessage);
+  };
+
+  var onCommentFieldInput = function () {
+    removeStyle(commentField);
   };
 
   var onUploadFormSubmit = function (evt) {
     evt.preventDefault();
-    var validityMessage = hashtagsValidation(hashtagsField.value);
-
-    hashtagsField.setCustomValidity(validityMessage);
-
-    if (validityMessage === '') {
-      window.messages.showLoading();
-      window.backend.save(new FormData(uploadForm), onSendFormSuccess, onSendFormError);
-    }
+    window.messages.showLoading();
+    window.backend.save(new FormData(uploadForm), onSendFormSuccess, onSendFormError);
   };
 
   var onSendFormSuccess = function () {
@@ -337,10 +353,12 @@
     {element: effectLevelPin, event: 'mousedown', listener: onEffectLevelPinMousedown},
     {element: commentField, event: 'focus', listener: onCommentFieldFocus},
     {element: commentField, event: 'blur', listener: onCommentFieldBlur},
+    {element: commentField, event: 'input', listener: onCommentFieldInput},
     {element: commentField, event: 'invalid', listener: onCommentFieldInvalid},
     {element: hashtagsField, event: 'focus', listener: onHashtagsFieldFocus},
     {element: hashtagsField, event: 'blur', listener: onHashtagsFieldBlur},
     {element: hashtagsField, event: 'input', listener: onHashtagsFieldInput},
+    {element: hashtagsField, event: 'invalid', listener: onHashtagsFieldInvalid},
     {element: uploadForm, event: 'submit', listener: onUploadFormSubmit}
   ];
 
